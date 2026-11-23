@@ -13,7 +13,7 @@ const META_PAGE_ID = process.env.META_PAGE_ID;
 if (!META_PAGE_ACCESS_TOKEN) {
   throw new Error("Falta configurar META_PAGE_ACCESS_TOKEN");
 }
-
+//
 if (!META_PAGE_ID) {
   throw new Error("Falta configurar META_PAGE_ID");
 }
