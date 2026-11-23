@@ -1,0 +1,6 @@
+{
+    "require": {
+        "google/auth": "^1.55.1",
+        "phpseclib/phpseclib": "^3.0"
+    }
+}

@@ -1,0 +1,182 @@
+#---------------------------------Woff Fonts
+#<FilesMatch ".(eot|ttf|otf|woff|woff2)">
+#	Header set Access-Control-Allow-Origin "*"
+#</FilesMatch>
+
+
+#---------------------------------Evita que se muestre contenido de directorios cuando no hay un index
+#Options All -Indexes
+
+
+#---------------------------------Habilito index.php
+DirectoryIndex index.php index.html
+
+
+#---------------------------------Cache del navegador 1 mes(SEO) 
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 1 month"
+	ExpiresByType image/jpg "access plus 1 month"
+	ExpiresByType image/gif "access plus 1 month"
+	ExpiresByType image/png "access plus 1 month"
+	ExpiresByType text/css "access plus 1 month"
+	ExpiresByType text/html "access plus 1 month"
+	ExpiresByType application/pdf "access plus 1 month"
+	ExpiresByType text/x-javascript "access plus 1 month"
+	ExpiresByType image/x-icon "access plus 1 month"
+	ExpiresByType application/javascript "access plus 1 month"
+	ExpiresByType image/svg+xml "access plus 1 month"
+	ExpiresByType image/vnd.microsoft.icon "access plus 1 month"
+	ExpiresByType application/font-woff "access plus 1 month"
+	ExpiresByType application/x-font-woff "access plus 1 month"
+	ExpiresByType application/vnd.ms-fontobject "access plus 1 monthr"
+	ExpiresByType font/opentype "access plus 1 month"
+	ExpiresByType font/ttf "access plus 1 month"
+	ExpiresByType font/otf "access plus 1 month"
+	ExpiresByType application/x-font-ttf "access plus 1 month"
+	ExpiresByType application/x-font-otf "access plus 1 month"
+</IfModule>
+
+
+#---------------------------------GZIP Compresion (SEO)
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/html
+	AddOutputFilterByType DEFLATE text/css
+	AddOutputFilterByType DEFLATE text/javascript
+	AddOutputFilterByType DEFLATE text/xml
+	AddOutputFilterByType DEFLATE text/plain
+	AddOutputFilterByType DEFLATE image/x-icon
+	AddOutputFilterByType DEFLATE image/svg+xml
+	AddOutputFilterByType DEFLATE application/rss+xml
+	AddOutputFilterByType DEFLATE application/javascript
+	AddOutputFilterByType DEFLATE application/x-javascript
+	AddOutputFilterByType DEFLATE application/xml
+	AddOutputFilterByType DEFLATE application/xhtml+xml
+	AddOutputFilterByType DEFLATE application/x-font
+	AddOutputFilterByType DEFLATE application/x-font-truetype
+	AddOutputFilterByType DEFLATE application/x-font-ttf
+	AddOutputFilterByType DEFLATE application/x-font-otf
+	AddOutputFilterByType DEFLATE application/x-font-opentype
+	AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+	AddOutputFilterByType DEFLATE font/ttf
+	AddOutputFilterByType DEFLATE font/otf
+	AddOutputFilterByType DEFLATE font/opentype
+	# For Olders Browsers Which Can't Handle Compression
+	BrowserMatch ^Mozilla/4 gzip-only-text/html
+	BrowserMatch ^Mozilla/4\.0[678] no-gzip
+	BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+
+
+#---------------------------------Forzar HTTPS y WWW
+<IfModule mod_rewrite.c>
+	# Activamos la redireccion
+	#RewriteEngine On
+	# NON www a WWW
+	#RewriteCond %{HTTP_HOST} !^www\.
+	#RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+	# HTTP a HTTPS
+	#RewriteCond %{HTTPS} off
+	#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301] 
+</IfModule>
+
+
+#---------------------------------SEF
+<IfModule mod_rewrite.c>
+	# Reglas redireccion URL amigables
+	#Options +FollowSymLinks
+	RewriteEngine on
+	# RewriteBase /
+	RewriteCond %{SCRIPT_FILENAME} !-d
+	RewriteCond %{SCRIPT_FILENAME} !-f
+</IfModule>
+
+
+#---------------------------------SEF: COTIZADOR
+<IfModule mod_rewrite.c>
+	Rewriterule ^error404$ index.php?controller=Error404C
+	Rewriterule ^inicio$ index.php
+	Rewriterule ^cotizador/([0-9]+)/(.+)$ index.php?controller=CotizadorC&method=CargaCotizadorC&ID_proyecto=$1
+	Rewriterule ^nueva-cotizacion$ index.php?controller=CotizadorC&method=NuevaCotizacionC
+	Rewriterule ^guarda-valores-cotizacion$ index.php?controller=CotizadorC&method=UpdateCotizacionC
+	Rewriterule ^acciones-cotizacion/email$ index.php?controller=CotizadorC&method=AccionesCotizacionC&accion=email
+	Rewriterule ^acciones-cotizacion/pdf$ index.php?controller=CotizadorC&method=AccionesCotizacionC&accion=pdf
+	Rewriterule ^acciones-cotizacion/copias-email$ index.php?controller=CotizadorC&method=AccionesCotizacionC&accion=copias-email
+	Rewriterule ^acciones-cotizacion/solicitar-separacion$ index.php?controller=CotizadorC&method=AccionesCotizacionC&accion=solicitar-separacion
+</IfModule>
+
+
+#---------------------------------SEF: ADMIN
+<IfModule mod_rewrite.c>
+
+	#-----------(acceso)
+	Rewriterule ^acceso$ index.php?controller=AdminC
+	Rewriterule ^panel/login$ index.php?controller=AdminC&method=LoginC
+	Rewriterule ^panel/login/error$ index.php?controller=AdminC&msg=login_error
+	Rewriterule ^panel/logout$ index.php?controller=AdminC&method=LogoutC
+
+	#-----------(restaurar contrasena)
+	Rewriterule ^panel/restaurar-contrasena$ index.php?controller=AdminC&method=RestaurarContrasenaC	
+	Rewriterule ^panel/restaurar-contrasena-envia$ index.php?controller=AdminC&method=RestaurarContrasenaEnviaC
+	Rewriterule ^panel/restaurar-contrasena/(.+)$ index.php?controller=AdminC&method=RestaurarContrasenaC&msg=$1
+
+	#-----------(dashboard)
+	Rewriterule ^panel/dashboard$ index.php?controller=AdminC&method=DashboardC
+
+	#-----------(proyectos)
+	Rewriterule ^panel/proyectos$ index.php?controller=AdminC&method=ProyectosC
+	Rewriterule ^panel/proyectos/ok/insert$ index.php?controller=AdminC&method=ProyectosC&msg=insert
+	Rewriterule ^panel/proyectos/ok/update$ index.php?controller=AdminC&method=ProyectosC&msg=update
+	Rewriterule ^panel/proyectos/ok/delete$ index.php?controller=AdminC&method=ProyectosC&msg=delete
+
+	#-----------(crud proyecto)
+	Rewriterule ^panel/proyecto/new$ index.php?controller=AdminC&method=ProyectoC&task=new
+	Rewriterule ^panel/proyecto/edit/([0-9]+)$ index.php?controller=AdminC&method=ProyectoC&task=edit&ID_proyecto=$1
+	Rewriterule ^panel/proyecto/new/insert$ index.php?controller=AdminC&method=ProyectoCrudC&action=insert	
+	Rewriterule ^panel/proyecto/edit/update$ index.php?controller=AdminC&method=ProyectoCrudC&action=update
+	Rewriterule ^panel/proyecto/delete/([0-9]+)$ index.php?controller=AdminC&method=ProyectoCrudC&action=delete&ID_proyecto=$1
+
+	#-----------(crud subproyecto-etapa)
+	Rewriterule ^panel/proyecto/([0-9]+)/subproyecto/new$ index.php?controller=AdminC&method=SubproyectoC&task=new&ID_proyecto=$1
+	Rewriterule ^panel/proyecto/([0-9]+)/subproyecto/edit/([0-9]+)$ index.php?controller=AdminC&method=SubproyectoC&task=edit&ID_proyecto=$1&ID_subproyecto=$2
+	Rewriterule ^panel/proyecto/([0-9]+)/subproyecto/new/insert$ index.php?controller=AdminC&method=SubproyectoCrudC&action=insert	
+	Rewriterule ^panel/proyecto/([0-9]+)/subproyecto/edit/update$ index.php?controller=AdminC&method=SubproyectoCrudC&action=update
+	Rewriterule ^panel/proyecto/([0-9]+)/subproyecto/delete/([0-9]+)$ index.php?controller=AdminC&method=SubproyectoCrudC&action=delete&ID_proyecto=$1&ID_subproyecto=$2
+
+	#-----------(contadores)
+	Rewriterule ^panel/contadores$ index.php?controller=AdminC&method=ContadoresC
+
+	#-----------(variables base cotizador)
+	Rewriterule ^panel/variables$ index.php?controller=AdminC&method=VariablesCotizadorC
+	Rewriterule ^panel/variables/ok$ index.php?controller=AdminC&method=VariablesCotizadorC&msg=update	
+	Rewriterule ^panel/variables-update$ index.php?controller=AdminC&method=VariablesCotizadorUpdateC
+
+	#-----------(notas legales)
+	Rewriterule ^panel/notas-legales$ index.php?controller=AdminC&method=NotasLegalesC
+	Rewriterule ^panel/notas-legales/ok/(.+)$ index.php?controller=AdminC&method=NotasLegalesC&msg=$1
+	Rewriterule ^panel/nota-legal/new$ index.php?controller=AdminC&method=NotaLegalC&task=new
+	Rewriterule ^panel/nota-legal/edit/([0-9]+)$ index.php?controller=AdminC&method=NotaLegalC&task=edit&ID_notaLegal=$1
+	Rewriterule ^panel/nota-legal/new/insert$ index.php?controller=AdminC&method=NotaLegalCrudC&action=insert	
+	Rewriterule ^panel/nota-legal/edit/update$ index.php?controller=AdminC&method=NotaLegalCrudC&action=update
+	Rewriterule ^panel/nota-legal/delete/([0-9]+)$ index.php?controller=AdminC&method=NotaLegalCrudC&action=delete&ID_notaLegal=$1
+
+	#-----------(usuarios)
+	Rewriterule ^panel/usuarios$ index.php?controller=AdminC&method=UsuariosC
+	Rewriterule ^panel/usuarios/ok/(.+)$ index.php?controller=AdminC&method=UsuariosC&msg=$1
+	Rewriterule ^panel/usuario/new$ index.php?controller=AdminC&method=UsuarioC&task=new
+	Rewriterule ^panel/usuario/edit/([0-9]+)$ index.php?controller=AdminC&method=UsuarioC&task=edit&ID_usuario=$1
+	Rewriterule ^panel/usuario/new/insert$ index.php?controller=AdminC&method=UsuarioCrudC&action=insert	
+	Rewriterule ^panel/usuario/edit/update$ index.php?controller=AdminC&method=UsuarioCrudC&action=update
+	Rewriterule ^panel/usuario/delete/([0-9]+)$ index.php?controller=AdminC&method=UsuarioCrudC&action=delete&ID_usuario=$1
+
+	#-----------(contrasena)
+	Rewriterule ^panel/contrasena$ index.php?controller=AdminC&method=ContrasenaC
+	Rewriterule ^panel/contrasena/ok$ index.php?controller=AdminC&method=ContrasenaC&msg=update
+	Rewriterule ^panel/contrasena-cambiar$ index.php?controller=AdminC&method=ContrasenaEditC
+
+</IfModule>
+
+
+
+#---------------------------------Error 404
+ErrorDocument 404 /cotizador-online/error404

@@ -1,0 +1,175 @@
+#---------------------------------Woff Fonts
+#<FilesMatch ".(eot|ttf|otf|woff|woff2)">
+#	Header set Access-Control-Allow-Origin "*"
+#</FilesMatch>
+
+
+#---------------------------------Evita que se muestre contenido de directorios cuando no hay un index
+#Options All -Indexes
+SetEnvIf X-Forwarded-Proto https HTTPS=on
+
+
+#---------------------------------Habilito index.php
+DirectoryIndex index.php index.html
+
+
+#---------------------------------Cache del navegador 1 mes(SEO) 
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 1 month"
+	ExpiresByType image/jpg "access plus 1 month"
+	ExpiresByType image/gif "access plus 1 month"
+	ExpiresByType image/png "access plus 1 month"
+	ExpiresByType text/css "access plus 1 month"
+	ExpiresByType text/html "access plus 1 month"
+	ExpiresByType application/pdf "access plus 1 month"
+	ExpiresByType text/x-javascript "access plus 1 month"
+	ExpiresByType image/x-icon "access plus 1 month"
+	ExpiresByType application/javascript "access plus 1 month"
+	ExpiresByType image/svg+xml "access plus 1 month"
+	ExpiresByType image/vnd.microsoft.icon "access plus 1 month"
+	ExpiresByType application/font-woff "access plus 1 month"
+	ExpiresByType application/x-font-woff "access plus 1 month"
+	ExpiresByType application/vnd.ms-fontobject "access plus 1 monthr"
+	ExpiresByType font/opentype "access plus 1 month"
+	ExpiresByType font/ttf "access plus 1 month"
+	ExpiresByType font/otf "access plus 1 month"
+	ExpiresByType application/x-font-ttf "access plus 1 month"
+	ExpiresByType application/x-font-otf "access plus 1 month"
+</IfModule>
+
+
+#---------------------------------GZIP Compresion (SEO)
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/html
+	AddOutputFilterByType DEFLATE text/css
+	AddOutputFilterByType DEFLATE text/javascript
+	AddOutputFilterByType DEFLATE text/xml
+	AddOutputFilterByType DEFLATE text/plain
+	AddOutputFilterByType DEFLATE image/x-icon
+	AddOutputFilterByType DEFLATE image/svg+xml
+	AddOutputFilterByType DEFLATE application/rss+xml
+	AddOutputFilterByType DEFLATE application/javascript
+	AddOutputFilterByType DEFLATE application/x-javascript
+	AddOutputFilterByType DEFLATE application/xml
+	AddOutputFilterByType DEFLATE application/xhtml+xml
+	AddOutputFilterByType DEFLATE application/x-font
+	AddOutputFilterByType DEFLATE application/x-font-truetype
+	AddOutputFilterByType DEFLATE application/x-font-ttf
+	AddOutputFilterByType DEFLATE application/x-font-otf
+	AddOutputFilterByType DEFLATE application/x-font-opentype
+	AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+	AddOutputFilterByType DEFLATE font/ttf
+	AddOutputFilterByType DEFLATE font/otf
+	AddOutputFilterByType DEFLATE font/opentype
+	# For Olders Browsers Which Can't Handle Compression
+	BrowserMatch ^Mozilla/4 gzip-only-text/html
+	BrowserMatch ^Mozilla/4\.0[678] no-gzip
+	BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+
+
+#---------------------------------Forzar HTTPS y WWW
+<IfModule mod_rewrite.c>
+	# Activamos la redireccion
+	#RewriteEngine On
+	# NON www a WWW
+	#RewriteCond %{HTTP_HOST} !^www\.
+	#RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+	# HTTP a HTTPS
+	#RewriteCond %{HTTPS} off
+	#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301] 
+</IfModule>
+#---------------------------------SEF
+<IfModule mod_rewrite.c>
+	# Reglas redireccion URL amigables
+	#Options +FollowSymLinks
+	RewriteEngine on
+	RewriteRule ^configs/ - [F,L]
+	RewriteRule ^libs/google-auth/ - [F,L]
+	RewriteRule ^(libs/google-auth|tests)/ - [F,L]
+	# RewriteBase /
+	RewriteCond %{SCRIPT_FILENAME} !-d
+	RewriteCond %{SCRIPT_FILENAME} !-f
+</IfModule>
+
+
+#---------------------------------SEF: INTRANET
+<IfModule mod_rewrite.c>
+	Rewriterule ^error404$ index.php?controller=Error404C
+	Rewriterule ^inicio$ index.php
+	Rewriterule ^login$ index.php?controller=AccesoC&method=LoginC
+	Rewriterule ^google-login$ index.php?controller=GoogleC&method=LoginC
+	Rewriterule ^inicio/error-login$ index.php?controller=AccesoC&msg=error-login
+	Rewriterule ^inicio/error-google$ index.php?controller=AccesoC&msg=error-google
+	Rewriterule ^logout$ index.php?controller=AccesoC&method=LogoutC	
+	Rewriterule ^home$ index.php?controller=IntranetC
+	Rewriterule ^centro-de-servicios$ index.php?controller=IntranetC&method=SeccionC&ID_seccion=1
+	Rewriterule ^sistema-integrado-de-gestion$ index.php?controller=IntranetC&method=SeccionC&ID_seccion=2
+	Rewriterule ^fechas-de-dilatacion$ index.php?controller=IntranetC&method=SeccionC&ID_seccion=3
+	#Rewriterule ^documentos-legales$ index.php?controller=IntranetC&method=SeccionC&ID_seccion=4
+	Rewriterule ^bim$ index.php?controller=IntranetC&method=SeccionC&ID_seccion=5
+	Rewriterule ^consulta-tu-informacion$ index.php?controller=IntranetC&method=SeccionC&ID_seccion=6
+	Rewriterule ^tecnologia$ index.php?controller=IntranetC&method=SeccionC&ID_seccion=7
+</IfModule>
+
+
+#---------------------------------SEF: ADMIN
+<IfModule mod_rewrite.c>
+	#---[CATEGORIAS]
+	Rewriterule ^admin-categorias$ index.php?controller=AdminC&method=CategoriasC
+	Rewriterule ^admin-categorias/ok/(.+)$ index.php?controller=AdminC&method=CategoriasC&msg=$1
+
+	#---[DETALLE CATEGORIA]
+	Rewriterule ^admin-categoria/new$ index.php?controller=AdminC&method=CategoriaC&task=new
+	Rewriterule ^admin-categoria/edit/([0-9]+)$ index.php?controller=AdminC&method=CategoriaC&task=edit&ID_categoria=$1
+	Rewriterule ^admin-categoria/new/insert$ index.php?controller=AdminC&method=CategoriaCrudC&action=insert
+	Rewriterule ^admin-categoria/edit/update$ index.php?controller=AdminC&method=CategoriaCrudC&action=update
+	Rewriterule ^admin-categoria/remove/([0-9]+)$ index.php?controller=AdminC&method=CategoriaCrudC&action=delete&ID_categoria=$1
+
+	#---[CARPETAS]
+	Rewriterule ^admin-carpetas$ index.php?controller=AdminC&method=CarpetasC
+	Rewriterule ^admin-carpetas/ok/(.+)$ index.php?controller=AdminC&method=CarpetasC&msg=$1
+
+	#---[DETALLE CARPETA]
+	Rewriterule ^admin-carpeta/new$ index.php?controller=AdminC&method=CarpetaC&task=new
+	Rewriterule ^admin-carpeta/edit/([0-9]+)$ index.php?controller=AdminC&method=CarpetaC&task=edit&ID_carpeta=$1
+	Rewriterule ^admin-carpeta/new/insert$ index.php?controller=AdminC&method=CarpetaCrudC&action=insert
+	Rewriterule ^admin-carpeta/edit/update$ index.php?controller=AdminC&method=CarpetaCrudC&action=update
+	Rewriterule ^admin-carpeta/remove/([0-9]+)$ index.php?controller=AdminC&method=CarpetaCrudC&action=delete&ID_carpeta=$1
+
+	#---[LINKS]
+	Rewriterule ^admin-links$ index.php?controller=AdminC&method=LinksC
+	Rewriterule ^admin-links/ok/(.+)$ index.php?controller=AdminC&method=LinksC&msg=$1
+
+	#---[DETALLE LINK]
+	Rewriterule ^admin-link/new$ index.php?controller=AdminC&method=LinkC&task=new
+	Rewriterule ^admin-link/edit/([0-9]+)$ index.php?controller=AdminC&method=LinkC&task=edit&ID_link=$1
+	Rewriterule ^admin-link/new/insert$ index.php?controller=AdminC&method=LinkCrudC&action=insert
+	Rewriterule ^admin-link/edit/update$ index.php?controller=AdminC&method=LinkCrudC&action=update
+	Rewriterule ^admin-link/remove/([0-9]+)$ index.php?controller=AdminC&method=LinkCrudC&action=delete&ID_link=$1
+
+	#---[ADMINISTRADORES]
+	Rewriterule ^admin-administradores$ index.php?controller=AdminC&method=AdministradoresC
+	Rewriterule ^admin-administradores/ok/(.+)$ index.php?controller=AdminC&method=AdministradoresC&msg=$1
+
+	#---[DETALLE ADMINISTRADOR]
+	Rewriterule ^admin-administrador/new$ index.php?controller=AdminC&method=AdministradorC&task=new
+	Rewriterule ^admin-administrador/edit/([0-9]+)$ index.php?controller=AdminC&method=AdministradorC&task=edit&ID_admin=$1
+	Rewriterule ^admin-administrador/new/insert$ index.php?controller=AdminC&method=AdministradorCrudC&action=insert
+	Rewriterule ^admin-administrador/edit/update$ index.php?controller=AdminC&method=AdministradorCrudC&action=update
+	Rewriterule ^admin-administrador/remove/([0-9]+)$ index.php?controller=AdminC&method=AdministradorCrudC&action=delete&ID_admin=$1
+
+	#---[EMPLEADOS - CSV]
+	Rewriterule ^admin-empleados$ index.php?controller=AdminC&method=CsvEmpleadosC
+	Rewriterule ^admin-empleados-hecho$ index.php?controller=AdminC&method=CsvEmpleadosC&msg=hecho
+	Rewriterule ^admin-empleados-download$ index.php?controller=AdminC&method=CsvEmpleadosDownloadC
+	Rewriterule ^admin-empleados-upload$ index.php?controller=AdminC&method=CsvEmpleadosUploadC
+
+	#-----------(Encriptar contraseñas)
+	Rewriterule ^encriptar-contrasenas$ index.php?controller=AdminC&method=EncriptarContrasenasC
+</IfModule>
+
+
+#---------------------------------Error 404
+ErrorDocument 404 /intranet/error404
